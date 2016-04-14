@@ -41,12 +41,12 @@ int main()  {
 
   while(1)  {
     take_picture();
-    int[][] image = int[320][240];
-    for(int i;i<320,i++)  {
+    int image[320][240];
+    for(int i;i<320;i++)  {
       for(int j=0;j<240;j++)  {
-        imgae[i][j] = get_pixel(i,j,3);
+        image[i][j] = get_pixel(i,j,3);
       }
     }
     update_screen();
   }
-}
+return 0;}
