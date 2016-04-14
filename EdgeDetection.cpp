@@ -42,6 +42,8 @@ int main()  {
   int val;
   int val2;
   int delta = 2;
+  int tot;
+  float threshold;
 
   while(1)  {
     take_picture();
@@ -73,7 +75,7 @@ int main()  {
 //2d edge detection displays in bottom left
     for(int i=0;i<160;i++)  {
     	for(int j=0;j<120;j++)	{
-        val = ((8*image[2*i][2*j]) - image[2*i-delta][2*j] -image[2*i+delta][2*j])     -image[2*i-delta][2*j+delta]) -image[2*i][2*j+delta]) -image[2*i+delta][2*j+delta])       -image[2*i-delta][2*j-delta]) -image[2*i][2*j-delta]) -image[2*i+delta][2*j-delta]);
+        val = 8*image[2*i][2*j] - image[2*i-delta][2*j] -image[2*i+delta][2*j]     -image[2*i-delta][2*j+delta] -image[2*i][2*j+delta] -image[2*i+delta][2*j+delta]       -image[2*i-delta][2*j-delta] -image[2*i][2*j-delta] -image[2*i+delta][2*j-delta];
         if(val>255)
           val = 255;
         if(val<0)
@@ -81,7 +83,22 @@ int main()  {
         set_pixel(i,j+120,val,val,val);
 	    }
     }
-
+    tot =0;
+    for(int i=0;i<160;i++)	{
+        for(int j=0;j<120;j++)	{
+            tot += image[2*i][2*j];
+        }
+    }
+    threshold = tot/(160*120);
+    
+    for(int i=0;i<160;i++)	{
+        for(int j=0;j<120;j++)	{
+            if(image[i*2][j*2]>threshold)
+                set_pixel(i+160,j+120,255,255,255);
+            else
+                set_pixel(i+160,j+120,0,0,0);
+        }
+    }
     update_screen();
   }
 
