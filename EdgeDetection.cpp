@@ -40,22 +40,39 @@ int main()  {
   open_screen_stream();
 
   int val;
+  int val2;
 
   while(1)  {
     take_picture();
     int image[320][240];
-    for(int i;i<320;i++)  {
+    for(int i=0;i<320;i++)  {
       for(int j=0;j<240;j++)  {
-        image[i][j] = get_pixel(i,j,3);
+        image[i][j] = get_pixel(i,j,0);
         set_pixel(i,j,200,200,200);
+//	printf("loop ran \n");
       }
     }
-    for(int i;i<160;i++)  {
+	set_pixel(1,1,255,0,0);
+    for(int i=0;i<160;i++)  {
       for(int j=0;j<120;j++)  {
         val = image[2*i][2*j];
         set_pixel(i,j,val,val,val);
       }
     }
-    update_screen();
+    for(int i=0;i<160;i++){
+    	for(int j=0;j<120;j++)	{
+//	val2 = val;
+	val = ((2*image[2*i][2*j])-image[2*i-2][2*j]-image[2*i+2][2*j]);
+//	val2 = val2-val;
+//	printf("value to be drawn %d\n",val);
+	if(val>255)
+	    val = 255;
+	if(val<0)
+	    val = 0;
+	set_pixel(i+160,j,val,val,val);
+	}
+    }
+
+       update_screen();
   }
 return 0;}
