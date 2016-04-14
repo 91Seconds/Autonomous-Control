@@ -1,0 +1,19 @@
+
+This is the program for testing your hardware. Source code - lt.cpp, executable - lt.
+Run it using command "sudo ./lt". Compile it using "sudo make".
+
+1. It will put +5 V on all digital outputs/inputs to check the connections. Use LED or multimeter to check the connections.
+
+2. It will drive motors changing directions every 2 seconds.
+
+3. It will continously read all analog inputs.
+
+4. It will take a camera picture and display the image.
+
+5. Use Ctrl-C to terminate.
+
+If something is not working - let us know.
+
+You can use this code as starting point for your project.
+
+

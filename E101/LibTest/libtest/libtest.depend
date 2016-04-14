@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1460004470 source:/home/pi/E101/LibTest/libtest/lt.cpp
+	<stdio.h>
+	<time.h>
+	<string.h>
+
