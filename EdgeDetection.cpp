@@ -41,6 +41,7 @@ int main()  {
 
   int val;
   int val2;
+  int delta = 2;
 
   while(1)  {
     take_picture();
@@ -49,30 +50,39 @@ int main()  {
       for(int j=0;j<240;j++)  {
         image[i][j] = get_pixel(i,j,0);
         set_pixel(i,j,200,200,200);
-//	printf("loop ran \n");
       }
     }
-	set_pixel(1,1,255,0,0);
     for(int i=0;i<160;i++)  {
       for(int j=0;j<120;j++)  {
         val = image[2*i][2*j];
         set_pixel(i,j,val,val,val);
       }
     }
-    for(int i=0;i<160;i++){
+
+//horizontal only edge detection with a delta of 2 pixels displays in top right
+    for(int i=0;i<160;i++)  {
     	for(int j=0;j<120;j++)	{
-//	val2 = val;
-	val = ((2*image[2*i][2*j])-image[2*i-2][2*j]-image[2*i+2][2*j]);
-//	val2 = val2-val;
-//	printf("value to be drawn %d\n",val);
-	if(val>255)
-	    val = 255;
-	if(val<0)
-	    val = 0;
-	set_pixel(i+160,j,val,val,val);
-	}
+        val = ((2*image[2*i][2*j])-image[2*i-2][2*j]-image[2*i+2][2*j]);
+        if(val>255)
+          val = 255;
+        if(val<0)
+	        val = 0;
+        set_pixel(i+160,j,val,val,val);
+	    }
+    }
+//2d edge detection displays in bottom left
+    for(int i=0;i<160;i++)  {
+    	for(int j=0;j<120;j++)	{
+        val = ((8*image[2*i][2*j]) - image[2*i-delta][2*j] -image[2*i+delta][2*j])     -image[2*i-delta][2*j+delta]) -image[2*i][2*j+delta]) -image[2*i+delta][2*j+delta])       -image[2*i-delta][2*j-delta]) -image[2*i][2*j-delta]) -image[2*i+delta][2*j-delta]);
+        if(val>255)
+          val = 255;
+        if(val<0)
+	        val = 0;
+        set_pixel(i,j+120,val,val,val);
+	    }
     }
 
-       update_screen();
+    update_screen();
   }
+
 return 0;}
