@@ -39,12 +39,21 @@ int main()  {
 
   open_screen_stream();
 
+  int val;
+
   while(1)  {
     take_picture();
     int image[320][240];
     for(int i;i<320;i++)  {
       for(int j=0;j<240;j++)  {
         image[i][j] = get_pixel(i,j,3);
+        set_pixel(i,j,200,200,200);
+      }
+    }
+    for(int i;i<160;i++)  {
+      for(int j=0;j<120;j++)  {
+        val = image[2*i][2*j];
+        set_pixel(i,j,val,val,val);
       }
     }
     update_screen();
