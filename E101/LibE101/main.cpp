@@ -14,8 +14,8 @@
 #include <errno.h>
 
 
-#define CAMERA_WIDTH 320 //Control Resolution from Camera
-#define CAMERA_HEIGHT 240 //Control Resolution from Camera
+#define CAMERA_WIDTH 640 //Control Resolution from Camera
+#define CAMERA_HEIGHT 480 //Control Resolution from Camera
 #define FB_MAX_SIZE 5000000
 
 // camera stuff
