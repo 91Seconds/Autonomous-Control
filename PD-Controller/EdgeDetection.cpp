@@ -38,12 +38,12 @@ int main()  {
   init(0);
 
   open_screen_stream();
-
+  float err;
   int val;
   int val2;
   int delta = 2;
   int tot;
-  float threshold;
+  double threshold;
 
   while(1)  {
     take_picture();
@@ -93,16 +93,19 @@ int main()  {
     err=0;
     for(int i=0;i<160;i++)	{
         for(int j=0;j<120;j++)	{
-            if(image[i*2][j*2]>threshold)
+            if(image[i*2][j*2]>*threshold){
                 set_pixel(i+160,j+120,255,255,255);
                 err += i-80;
+            }
             else
                 set_pixel(i+160,j+120,0,0,0);
         }
     }
-    e = err/(160*120);
-    printf("Err: %d\n");
+    err = err/(160*120);
+//    printf("Err: %f\n",err);
     update_screen();
+//    set_motor(1,40+0.8*err);
+//    set_motor(2,40-0.8*err);
   }
 
 return 0;}
