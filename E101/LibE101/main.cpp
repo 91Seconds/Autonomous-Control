@@ -14,14 +14,14 @@
 #include <errno.h>
 
 
-#define CAMERA_WIDTH 640 //Control Resolution from Camera
-#define CAMERA_HEIGHT 480 //Control Resolution from Camera
+#define CAMERA_WIDTH 320 //Control Resolution from Camera
+#define CAMERA_HEIGHT 240 //Control Resolution from Camera
 #define FB_MAX_SIZE 5000000
 
 // camera stuff
 CCamera *cam;  // camera instance
 int  Y_row[CAMERA_WIDTH];
-char pixels_buf[CAMERA_WIDTH*CAMERA_HEIGHT*4];
+char pixels_buf[CAMERA_WIDTH*CAMERA_HEIGHT*4*4];
 
 // camera image converted to fit display depth - somewhat big for 1960x1050 screen
 char cam_disp[FB_MAX_SIZE];
@@ -128,7 +128,7 @@ int set_motor(int motor,int speed)
     {
         if (speed>=0)
         {
-           gpioPWM(20,speed);
+           gpioPWM(20,speed);fbp
            gpioPWM(21,0);
         }
         if ( speed < 0)
@@ -358,8 +358,38 @@ void convert_camera_to_screen()
                  *((char*)(cam_disp + pix_offset + 2)) = r;
                 //put_pixel_RGB24(x+x_offset, y+y_offset, r, g, b);
             }
-       }
+        }
     }
+
+}
+
+void put_pixel(int x, int y, unsigned char r, unsigned char g, unsigned char b)
+{
+  int x_offset =10;
+  int y_offset =10;
+  // take snapshot of original screen
+		  if (vinfo.bits_per_pixel == 16) {
+                //put_pixel_RGB565(x+x_offset, y+y_offset, r, g, b);
+                 // calculate the pixel's byte offset inside the buffer
+                 // note: x * 2 as every pixel is 2 consecutive bytes
+                 unsigned int pix_offset = (x+x_offset) * 2 +( y+y_offset) * finfo.line_length;
+                 // now this is about the same as 'fbp[pix_offset] = value'
+                 // but a bit more complicated for RGB565
+                 //unsigned short c = ((r / 8) << 11) + ((g / 4) << 5) + (b / 8);
+                 unsigned short c = ((r / 8) * 2048) + ((g / 4) * 32) + (b / 8);
+                 // write 'two bytes at once'
+                 *((unsigned short*)(cam_disp + pix_offset)) = c;
+            }
+            else {
+                // calculate the pixel's byte offset inside the buffer
+                // note: x * 3 as every pixel is 3 consecutive bytes
+                unsigned int pix_offset = (x+x_offset) * 3 + (y+y_offset) * finfo.line_length;
+                // now this is about the same as 'fbp[pix_offset] = value'
+                 *((char*)(cam_disp + pix_offset)) = b;
+                 *((char*)(cam_disp + pix_offset + 1)) = g;
+                 *((char*)(cam_disp + pix_offset + 2)) = r;
+                //put_pixel_RGB24(x+x_offset, y+y_offset, r, g, b);
+            }
 
 }
 
@@ -453,7 +483,7 @@ int update_screen()
    }
    //  memcpy(&(cam_disp[0]),fbp,screensize);
    // modify cam_disp with camera image
-   convert_camera_to_screen(); //
+   //convert_camera_to_screen(); //
     // copy original sceen fb to "original" buffer
    //memcpy(&(original[0]),fbp,screensize);
    // original screen -> cam_disp
