@@ -128,7 +128,7 @@ int set_motor(int motor,int speed)
     {
         if (speed>=0)
         {
-           gpioPWM(20,speed);fbp
+           gpioPWM(20,speed);
            gpioPWM(21,0);
         }
         if ( speed < 0)

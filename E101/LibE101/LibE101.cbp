@@ -34,10 +34,10 @@
 				<Linker>
 					<Add option="-s" />
 					<Add library="/usr/local/lib/libpigpio.so" />
-					<Add library="../../../../opt/vc/lib/libbcm_host.so" />
-					<Add library="../../../../opt/vc/lib/libmmal.so" />
-					<Add library="../../../../usr/lib/arm-linux-gnueabihf/librt.so" />
-					<Add library="../../../../usr/lib/arm-linux-gnueabihf/libpthread.so" />
+					<Add library="/opt/vc/lib/libmmal.so" />
+					<Add library="/usr/lib/arm-linux-gnueabihf/librt.so" />
+					<Add library="/usr/lib/arm-linux-gnueabihf/libpthread.so" />
+					<Add library="/opt/vc/lib/libbcm_host.so" />
 				</Linker>
 			</Target>
 		</Build>
