@@ -38,6 +38,19 @@ extern "C" int receive_from_server(char message[24]);
 extern "C" void convert_camera_to_screen();
 extern "C" void put_pixel(int x, int y, unsigned char red, unsigned char green, unsigned char blue);
 
+int correlate(int iAddress,int jAddress,int value)   {
+    int total=0;
+    float avg;
+    for(int i=0;i<320;i++)  {
+        for(int j=0;j<240;j++)  {
+            total+=(get_pixel(iAddress,jAddress,3)*value);
+        }
+    }
+    avg=total/(320*240);
+    return avg;
+}
+
+
 int main()  {
   init(0);
 
@@ -50,76 +63,51 @@ int main()  {
   double threshold;
   int prev_image[320][240];
   int image[320][240];
+//    int arraypointer = *image;
 
   for(int i=0;i<320;i++){
     for(int j=0;j<320;j++){
       prev_image[i][j] =0;
     }
   }
+    while(1)  {
+        take_picture();
+        convert_camera_to_screen();
 
-  while(1)  {
-    take_picture();
-    convert_camera_to_screen();
-
-    for(int i=0;i<320;i++)  {
-      for(int j=0;j<240;j++)  {
-        image[i][j] = get_pixel(i,j,0);
-        put_pixel(i,j,200,200,200);
-      }
-    }
-    for(int i=0;i<320;i++)  {
-      for(int j=0;j<240;j++)  {
-        val = image[i][j];
-        put_pixel(i,j,val,val,val);
-      }
-    }
-
-//time derivitive displays in top right
-    for(int i=0;i<320;i++)  {
-    	for(int j=0;j<240;j++)	{
-            val = image[i][j]-prev_image[i][j];
-            prev_image[i][j]=image[i][j];
-            if(val>255)
-              val = 255;
-            if(val<0)
-              val = 0;
-            put_pixel(i+320,j,val,val,val);
+        //loads edge detected image into pixel buffer
+        for(int i=0;i<320;i++)  {
+    	    for(int j=0;j<240;j++)	{
+                val = 8*image[i][j] - image[i-delta][j] -image[i+delta][j]     -image[i-delta][j+delta] -image[i][j+delta] -image[i+delta][j+delta]       -image[i-delta][j-delta] -image[i][j-delta] -image[i+delta][j-delta];
+                if(val>255)
+                    val = 255;
+                if(val<0)
+	                val = 0;
+                set_pixel(i,j,val,val,val);
+	        }
         }
-    }
-//2d edge detection displays in bottom left
-    for(int i=0;i<320;i++)  {
-    	for(int j=0;j<240;j++)	{
-        val = 8*image[i][j] - image[i-delta][j] -image[i+delta][j]     -image[i-delta][j+delta] -image[i][j+delta] -image[i+delta][j+delta]       -image[i-delta][j-delta] -image[i][j-delta] -image[i+delta][j-delta];
-        if(val>255)
-          val = 255;
-        if(val<0)
-	        val = 0;
-        put_pixel(i,j+240,val,val,val);
-	    }
-    }
-    tot =0;
-    for(int i=0;i<320;i++)	{
-        for(int j=0;j<160;j++)	{
-            tot += image[i][j];
-        }
-    }
-    threshold = tot/(320*240);
-    err=0;
-    for(int i=0;i<320;i++)	{
-        for(int j=0;j<240;j++)	{
-            if(image[i][j]>threshold){
-                put_pixel(i+320,j+240,255,255,255);
-                err += i-160;
+        //loads the edge detected image back to the image array
+        for(int i=0;i<320;i++)  {
+            for(int j=0;j<240;j++)  {
+                image[i][j] = get_pixel(i,j,3);
             }
-            else
-                put_pixel(i+320,j+240,0,0,0);
         }
-    }
-    err = err/(160*120);
-//    printf("Err: %f\n",err);
+        //performs the correlation on only white pixels
+        for(int i=0;i<320;i++)  {
+            for(int j=0;j<240;j++)  {
+                if (prev_image[i][j]>100) {
+                    put_pixel(i,j,correlate(i,j,prev_image[i][j]),0,0);
+                }
+            }
+        }
+        //loads the current image into the previous image;
+        for(int i=0;i<320;i++)  {
+            for(int j=0;j<240;j++)  {
+                prev_image[i][j]=image[i][j];
+            }
+        }
 
-//    for(int i=0;i<320;i++)	{
-//        for(int j=0;j<240;j++)	{
+
+
             
 
     update_screen();
