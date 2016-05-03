@@ -1,2 +1,2 @@
-EdgeDetection: EdgeDetection.cpp
-	sudo gcc -L\usr\lib -Wall -o EdgeDetection EdgeDetection.cpp -lE101 -lrt
+PD-Controller: PD-Controller.cpp
+	sudo gcc -L\usr\lib -Wall -o PD-Controller PD-Controller.cpp -lE101 -lrt

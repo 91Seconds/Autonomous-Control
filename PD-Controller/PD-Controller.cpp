@@ -1,3 +1,5 @@
+
+
 /*SKELETON CODES FOR AVC */
 /*  A.Roberts, 5 Apr 2016*/
 #include <stdio.h>
@@ -5,7 +7,6 @@
 //#include <pthread.h>
 #include <time.h>
 #include <string.h>
-
 
 // sudo gcc -Wall
 extern "C" int init_hardware();
@@ -41,70 +42,91 @@ extern "C" void put_pixel(int x, int y, unsigned char red, unsigned char green, 
 int main()  {
   init(0);
 
-  open_screen_stream();
 
+  open_screen_stream();
+  float err;
   int val;
   int val2;
   int delta = 2;
   int tot;
-  float threshold;
+  double threshold;
+  int prev_image[320][240];
+  int image[320][240];
+
+  for(int i=0;i<320;i++){
+    for(int j=0;j<320;j++){
+      prev_image[i][j] =0;
+    }
+  }
 
   while(1)  {
     take_picture();
     convert_camera_to_screen();
-    int image[320][240];
+
     for(int i=0;i<320;i++)  {
       for(int j=0;j<240;j++)  {
         image[i][j] = get_pixel(i,j,0);
-        set_pixel(i,j,200,200,200);
+        put_pixel(i,j,200,200,200);
       }
     }
-    for(int i=0;i<160;i++)  {
-      for(int j=0;j<120;j++)  {
-        val = image[2*i][2*j];
-        set_pixel(i,j,val,val,val);
+    for(int i=0;i<320;i++)  {
+      for(int j=0;j<240;j++)  {
+        val = image[i][j];
+        put_pixel(i,j,val,val,val);
       }
     }
 
-//horizontal only edge detection with a delta of 2 pixels displays in top right
-    for(int i=0;i<160;i++)  {
-    	for(int j=0;j<120;j++)	{
-        val = ((2*image[2*i][2*j])-image[2*i-2][2*j]-image[2*i+2][2*j]);
-        if(val>255)
-          val = 255;
-        if(val<0)
-	        val = 0;
-        set_pixel(i+160,j,val,val,val);
-	    }
+//time derivitive displays in top right
+    for(int i=0;i<320;i++)  {
+    	for(int j=0;j<240;j++)	{
+            val = image[i][j]-prev_image[i][j];
+            prev_image[i][j]=image[i][j];
+            if(val>255)
+              val = 255;
+            if(val<0)
+              val = 0;
+            put_pixel(i+320,j,val,val,val);
+        }
     }
 //2d edge detection displays in bottom left
-    for(int i=0;i<160;i++)  {
-    	for(int j=0;j<120;j++)	{
-        val = 8*image[2*i][2*j] - image[2*i-delta][2*j] -image[2*i+delta][2*j]     -image[2*i-delta][2*j+delta] -image[2*i][2*j+delta] -image[2*i+delta][2*j+delta]       -image[2*i-delta][2*j-delta] -image[2*i][2*j-delta] -image[2*i+delta][2*j-delta];
+    for(int i=0;i<320;i++)  {
+    	for(int j=0;j<240;j++)	{
+        val = 8*image[i][j] - image[i-delta][j] -image[i+delta][j]     -image[i-delta][j+delta] -image[i][j+delta] -image[i+delta][j+delta]       -image[i-delta][j-delta] -image[i][j-delta] -image[i+delta][j-delta];
         if(val>255)
           val = 255;
         if(val<0)
 	        val = 0;
-        set_pixel(i,j+120,val,val,val);
+        put_pixel(i,j+240,val,val,val);
 	    }
     }
     tot =0;
-    for(int i=0;i<160;i++)	{
-        for(int j=0;j<120;j++)	{
-            tot += image[2*i][2*j];
+    for(int i=0;i<320;i++)	{
+        for(int j=0;j<160;j++)	{
+            tot += image[i][j];
         }
     }
-    threshold = tot/(160*120);
-    
-    for(int i=0;i<160;i++)	{
-        for(int j=0;j<120;j++)	{
-            if(image[i*2][j*2]>threshold)
-                set_pixel(i+160,j+120,255,255,255);
+    threshold = 100; //tot/(320*240);
+    err=0;
+    for(int i=0;i<320;i++)	{
+        for(int j=0;j<240;j++)	{
+            if(image[i][j]>threshold){
+                put_pixel(i+320,j+240,255,255,255);
+                err += i-160;
+            }
             else
-                set_pixel(i+160,j+120,0,0,0);
+                put_pixel(i+320,j+240,0,0,0);
         }
     }
+    err = err/(160*120);
+    printf("Err: %f\n",err);
+
+//    for(int i=0;i<320;i++)	{
+//        for(int j=0;j<240;j++)	{
+            
+
     update_screen();
+    set_motor(1,40+0.12*err);
+    set_motor(2,40-0.12*err);
   }
 
 return 0;}
