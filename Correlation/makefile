@@ -1,2 +1,2 @@
-Correlation: Correlation.cpp
-	sudo gcc -L\usr\lib -Wall -o Correlation Correlation.cpp -lE101 -lrt
+Correlation2: Correlation2.cpp
+	sudo gcc -L\usr\lib -Wall -o Correlation2 Correlation2.cpp -lE101 -lrt
