@@ -3,10 +3,12 @@
 /*SKELETON CODES FOR AVC */
 /*  A.Roberts, 5 Apr 2016*/
 #include <stdio.h>
-
+#include <cmath>
 //#include <pthread.h>
 #include <time.h>
 #include <string.h>
+
+using namespace std;
 
 // sudo gcc -Wall
 extern "C" int init_hardware();
@@ -63,58 +65,16 @@ int main()  {
     take_picture();
     convert_camera_to_screen();
 
-    for(int i=0;i<320;i++)  {
-      for(int j=0;j<240;j++)  {
-        image[i][j] = get_pixel(i,j,0);
-        put_pixel(i,j,200,200,200);
-      }
-    }
-    for(int i=0;i<320;i++)  {
-      for(int j=0;j<240;j++)  {
-        val = image[i][j];
-        put_pixel(i,j,val,val,val);
-      }
-    }
-
-//time derivitive displays in top right
-    for(int i=0;i<320;i++)  {
-    	for(int j=0;j<240;j++)	{
-            val = image[i][j]-prev_image[i][j];
-            prev_image[i][j]=image[i][j];
-            if(val>255)
-              val = 255;
-            if(val<0)
-              val = 0;
-            put_pixel(i+320,j,val,val,val);
-        }
-    }
-//2d edge detection displays in bottom left
-    for(int i=0;i<320;i++)  {
-    	for(int j=0;j<240;j++)	{
-        val = 8*image[i][j] - image[i-delta][j] -image[i+delta][j]     -image[i-delta][j+delta] -image[i][j+delta] -image[i+delta][j+delta]       -image[i-delta][j-delta] -image[i][j-delta] -image[i+delta][j-delta];
-        if(val>255)
-          val = 255;
-        if(val<0)
-	        val = 0;
-        put_pixel(i,j+240,val,val,val);
-	    }
-    }
-    tot =0;
-    for(int i=0;i<320;i++)	{
-        for(int j=0;j<160;j++)	{
-            tot += image[i][j];
-        }
-    }
     threshold = 100; //tot/(320*240);
     err=0;
     for(int i=0;i<320;i++)	{
         for(int j=0;j<240;j++)	{
             if(image[i][j]>threshold){
-                put_pixel(i+320,j+240,255,255,255);
-                err += i-160;
+                //put_pixel(i+320,j+240,255,255,255);
+                err += atan(i/(j+30));
             }
-            else
-                put_pixel(i+320,j+240,0,0,0);
+            //else
+                //put_pixel(i+320,j+240,0,0,0);
         }
     }
     err = err/(160*120);
