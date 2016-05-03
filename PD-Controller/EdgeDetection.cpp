@@ -35,6 +35,7 @@ extern "C" int set_PWM(int chan, int value);
 extern "C" int connect_to_server( char server_addr[15],int port);
 extern "C" int send_to_server(char message[24]);
 extern "C" int receive_from_server(char message[24]);
+
 extern "C" void convert_camera_to_screen();
 extern "C" void put_pixel(int x, int y, unsigned char red, unsigned char green, unsigned char blue);
 

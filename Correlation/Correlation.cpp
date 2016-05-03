@@ -1,5 +1,6 @@
 
 
+
 /*SKELETON CODES FOR AVC */
 /*  A.Roberts, 5 Apr 2016*/
 #include <stdio.h>
@@ -102,13 +103,13 @@ int main()  {
         for(int k=-16;k<16;k++)	{
 	    for(int l=-16;l<16;l++)	{
 		int total;
-		for(int i=16;i<304;i++)	{
-		    for(int j=16;j<224;j++)	{
-			total += image[i][j] * prev_image[i+k][j+l];
+		for(int i=8;i<80-8;i++)	{
+		    for(int j=8;j<60-8;j++)	{
+			total += image[4*i][4*j] * prev_image[4*i+k][4*j+l];
 		    }
 		}
-		printf("total: %d\n",total/10000);
-		total=(total)/(100000);
+//		printf("total: %d\n",total/10000);
+		total=(total)/(10000);
 		put_pixel(400+k,400+l,total,total,0);
 	    }
         }
