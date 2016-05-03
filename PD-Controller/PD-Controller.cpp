@@ -8,7 +8,8 @@
 #include <time.h>
 #include <string.h>
 
-using namespace std;
+
+//using namespace std;
 
 // sudo gcc -Wall
 extern "C" int init_hardware();
@@ -71,7 +72,7 @@ int main()  {
         for(int j=0;j<240;j++)	{
             if(image[i][j]>threshold){
                 //put_pixel(i+320,j+240,255,255,255);
-                err += atan(i/(j+30));
+                int vsdb = std::atan((double)(i-160)/(double)(j))*get_pixel(i,j,3);
             }
             //else
                 //put_pixel(i+320,j+240,0,0,0);
@@ -79,6 +80,7 @@ int main()  {
     }
     err = err/(160*120);
     printf("Err: %f\n",err);
+
 
 //    for(int i=0;i<320;i++)	{
 //        for(int j=0;j<240;j++)	{
